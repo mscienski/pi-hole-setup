@@ -69,6 +69,14 @@ I will document the process with Etcher to write Armbian image into SD cards.
   apt install iptables
   ```
 
+## Install net tools
+
+The net-tools package provides networking tools such as ifconfig
+
+  ```shell
+  apt install net-tools
+  ```
+
 ## Set up DNS-over-HTTPS
 
 Before setting up Pi-hole we're going to setup a proxy to translate our DNS queries into DNS-over-HTTPS requests.
