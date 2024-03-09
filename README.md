@@ -77,6 +77,30 @@ The net-tools package provides networking tools such as ifconfig
   apt install net-tools
   ```
 
+## Rename the LAN network interface
+
+The nanopineo3 has two network ports, WAN and LAN. WAN is connected to the modem, and LAN to the rest of the network. In order for the LAN port to be useful, it needs to be bridged to the WAN.
+
+First, identify network interfaces
+
+```shell
+ip link show
+```
+
+This should return `eth0` for the WAN interface, and some other system generated name for the LAN interface.
+
+Permanently renaming the LAN interface will make bridging easier
+
+```shell
+nano /etc/udev/rules.d/70-persistent-net.rules
+```
+Rename and modify the NAME parameter with the desired new name
+
+```shell
+SUBSYSTEM=="net",ACTION=="add",DRIVERS=="?*",ATTR{address}=="ae:bb:14:5d:5f:62",ATTR{dev_id}=="0x0",ATTR{type}=="1",KERNEL=="eth*",NAME="eth1"
+```
+
+
 ## Set up DNS-over-HTTPS
 
 Before setting up Pi-hole we're going to setup a proxy to translate our DNS queries into DNS-over-HTTPS requests.
@@ -449,6 +473,7 @@ These are just some good practices to hardening the SSH daemon.
 * Disable unused SystemD services
 
   ```shell
-  systemctl stop wpa_supplicant systemd-rfkill.service systemd-rfkill.socket hostapd
-  systemctl disable wpa_supplicant systemd-rfkill.service systemd-rfkill.socket hostapd
+  # add `hostapd` to the list below if its active on the system
+  systemctl stop wpa_supplicant systemd-rfkill.service systemd-rfkill.socket 
+  systemctl disable wpa_supplicant systemd-rfkill.service systemd-rfkill.socket
   ```
