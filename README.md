@@ -69,9 +69,7 @@ I will document the process with Etcher to write Armbian image into SD cards.
   apt install iptables
   ```
 
-## Install net tools
-
-The net-tools package provides networking tools such as ifconfig
+* Install net-tools. The net-tools package provides networking tools such as ifconfig
 
   ```shell
   apt install net-tools
