@@ -43,6 +43,9 @@ I will document the process with Etcher to write Armbian image into SD cards.
 * SSH into the box by `ssh root@<IP>` and the default password is `1234`
 * Immediately after login the first time it will ask the user to change `root` password and create a new regular user account
 
+### IP Assignment
+In your modem/router configuration (i.e. Google Home for Google Wifi), give the `nanopineo3` a static IP address, i.e. a DHCP IP reservation, such as `192.168.86.2`. This will be then be referenced when changing the DNS and DHCP settings.
+
 ## Common set up
 
 * Set the hostname (replace `<NEW_HOSTNAME>` with the name you desire)
@@ -229,10 +232,6 @@ In order to fix that we're going to use [CertBot](https://certbot.eff.org) to ge
   ```shell
   apt install letsencrypt
   ``` -->
-
-## Set up DHCP server
-
-You can either use the NanoPi as a DHCP for your LAN or your can edit your actual DHCP options to use the NanoPi IP address as the default DNS server.
 
 ## Watchdog
 
@@ -477,3 +476,41 @@ These are just some good practices to hardening the SSH daemon.
   systemctl stop wpa_supplicant systemd-rfkill.service systemd-rfkill.socket 
   systemctl disable wpa_supplicant systemd-rfkill.service systemd-rfkill.socket
   ```
+
+## Set up DHCP server
+
+You can either use the NanoPi as a DHCP for your LAN or your can edit your actual DHCP options to use the NanoPi IP address as the default DNS server.
+
+In the pihole admin, enable DHCP server and give it a range of addresses to hand out. If the pihole's static IP is `192.168.86.2`, a suitable range would be `192.168.86.3` to `192.168.86.255`
+
+Set the Router IP address to the ISP modem IP, e.g. `192.168.86.1`
+
+Next configure your router to use the PiHole's DNS. Using a service like Google Wifi with the Google Home app, set the DNS to `Custom` and give it the static IP of the Nano PiHole e.g. `192.168.86.2`
+
+Configure your modem to use the PiHole's DHCP server. For Google Wifi, in the DHCP Address Pool setting, set the Starting IP and Ending IP to the static IP assigned to the PiHole, e.g. `192.168.86.2`
+
+## Bridge the LAN port
+In order to connect other devices to the Nano Pi Neo 3, the LAN port needs to be bridged to the WAN port to pass through the connection. The `create-bridge` script can be used for this purpose. The script is necessary to run all the commands in quick succession. Running the commands individually while SSH'd to the PiHole will disconnect your SSH session, blocking you from continuing.
+
+* Create the `create-bridge` file in a suitable location, such as `/opt`.
+
+* Make the script executable.
+
+  ```shell
+  chmod +x /opt/create-bridge
+  ```
+
+* Add the script to run at startup in the background. Edit `/etc/rc.local`
+
+  ```shell
+  nano /etc/rc.local
+  ```
+
+* Add the following line
+
+  ```shell
+  /opt/create-bridge &
+  ```
+
+The LAN port will be bridged and downstream devices can be connected to the Nano Pi Neo 3.
+
