@@ -92,12 +92,14 @@ Permanently renaming the LAN interface will make bridging easier
 ```shell
 nano /etc/udev/rules.d/70-persistent-net.rules
 ```
-Rename and modify the NAME parameter with the desired new name
+
+Rename and modify the NAME parameter with the desired new name. Use the MAC address from the output above.
 
 ```shell
 SUBSYSTEM=="net",ACTION=="add",DRIVERS=="?*",ATTR{address}=="ae:bb:14:5d:5f:62",ATTR{dev_id}=="0x0",ATTR{type}=="1",KERNEL=="eth*",NAME="eth1"
 ```
 
+Restart and run `ip link show` again to verify the name was changed.
 
 ## Set up DNS-over-HTTPS
 
