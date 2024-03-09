@@ -6,9 +6,15 @@ sleep 30
 
 ip link add name br0 type bridge
 ip link set dev br0 up
-ip address add 192.168.86.39/24 dev br0
+
+# set the ip address and default gateway from the current network's status
+# this could be optimized by matching the outputs of the commands and sending them to the `add` and `append` commands
+# otherwise, use the static ip address assigned to the device
+# ip address show eth0
+# ip route show dev eth0
+ip address add 192.168.86.2/24 dev br0
 ip route append default via 192.168.86.1 dev br0
 
 ip link set eth1 master br0
 ip link set eth0 master br0
-ip address del 192.168.86.39/24 dev eth0
+ip address del 192.168.86.2/24 dev eth0
