@@ -1,4 +1,4 @@
-# How to set up Pi-hole to secure your DNS queries with DNS-over-HTTPS and domain filters
+# How to set up Pi-hole to secure your DNS queries with DNS-over-HTTPS and domain filters using the nanopineo3
 
 This is a step by step guide on how to set up Pi-hole on any linux device to secure your DNS queries via DNS-over-HTTPS and ban all blacklisted domains.
 
