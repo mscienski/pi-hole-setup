@@ -489,7 +489,7 @@ Next configure your router to use the PiHole's DNS. Using a service like Google 
 
 Configure your modem to use the PiHole's DHCP server. For Google Wifi, in the DHCP Address Pool setting, set the Starting IP and Ending IP to the static IP assigned to the PiHole, e.g. `192.168.86.2`
 
-## Bridge the LAN port
+## Bridge the LAN port (deprecated)
 In order to connect other devices to the Nano Pi Neo 3, the LAN port needs to be bridged to the WAN port to pass through the connection. The `create-bridge` script can be used for this purpose. The script is necessary to run all the commands in quick succession. Running the commands individually while SSH'd to the PiHole will disconnect your SSH session, blocking you from continuing.
 
 * Create the `create-bridge` file in a suitable location, such as `/opt`.
@@ -514,3 +514,32 @@ In order to connect other devices to the Nano Pi Neo 3, the LAN port needs to be
 
 The LAN port will be bridged and downstream devices can be connected to the Nano Pi Neo 3.
 
+## Bridge the LAN port (newer version of Debian based OS using netplan)
+
+Edit `/etc/netplan/10-dchp-all-interfaces.yaml` or the default netplan configuration
+
+Update the lines to list the network interfaces explicitly and disallow dhcp for them, then create the bridge with dhcp.
+
+```
+# Added by Armbian
+#
+# Reference: https://netplan.readthedocs.io/en/stable/netplan-yaml/
+#
+# Let systemd-networkd manage all Ethernet devices on this system, but be configured by Netplan.
+
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    end0:
+      dhcp4: no
+      dhcp6: no
+    eth1:
+      dhcp4: no
+      dhcp6: no
+  bridges:
+    br0:
+      dhcp4: yes
+      dhcp6: yes
+      interfaces: [end0, eth1]
+```
